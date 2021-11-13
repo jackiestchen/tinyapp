@@ -40,13 +40,19 @@ app.post("/urls", (req, res) => {
   const shortURL = generateRandomString();
   urlDataBase[shortURL] = req.body.longURL;
   res.redirect(`/urls/${shortURL}`);
-  console.log(urlDataBase);
+  // console.log(urlDataBase);
 })
 
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDataBase[req.params.shortURL];
   console.log(longURL);
   res.redirect(longURL);
+})
+
+app.post("/urls/:shortURL/delete", (req, res) => {
+  // console.log(req.params);
+  delete urlDataBase[req.params.shortURL];
+  res.redirect("/urls");
 })
 
 
