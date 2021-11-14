@@ -86,12 +86,6 @@ app.post("/urls/:id", (req, res) => {
 app.post("/login", (req, res) => {
   res.cookie("username", req.body);
   res.redirect(301, "/urls");
-  // const templateVars = {
-  //   username: req.cookies["username"],
-  //   urls: urlDataBase
-  // };
-  // console.log(templateVars);
-  // res.render("urls_index", templateVars);
 });
 
 app.post("/logout", (req, res) => {
