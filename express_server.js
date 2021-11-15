@@ -23,7 +23,7 @@ const users = {
     email: "user2@example.com",
     password: "dishwasher-funk"
   }
-}
+};
 
 app.get("/", (req, res) => {
   res.send("Hello!");
@@ -69,7 +69,7 @@ app.get("/urls/:shortURL", (req, res) => {
 
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString();
-  urlDataBase[shortURL] = req.body.longURL;
+  urlDataBase[shortURL] = appendLongURL(req.body.longURL);
   res.redirect(`/urls/${shortURL}`);
   // console.log(urlDataBase);
 });
@@ -92,7 +92,7 @@ app.post("/urls/:shortURL/edit", (req, res) => {
 
 app.post("/urls/:id", (req, res) => {
   // console.log(req.body, req.params.id);
-  urlDataBase[req.params.id] = req.body.longURL;
+  urlDataBase[req.params.id] = appendLongURL(req.body.longURL);
   res.redirect("/urls");
 });
 
@@ -133,4 +133,12 @@ app.post("/register", (req, res) => {
 
 function generateRandomString() {
   return Math.random().toString(36).substr(2,6);
+}
+
+function appendLongURL(string) {
+  string = string.toLowerCase();
+  if (string.substr(0, 6) !== "http://") {
+    return "http://" + string;
+  }
+  return string;
 }
