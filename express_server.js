@@ -38,19 +38,24 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  let cookieUsername = null;
-  if (req.cookies["username"]) {
-    cookieUsername = req.cookies["username"];
+  let userID = null;
+  if (req.cookies["user_id"]) {
+    userID = req.cookies["user_id"];
   }
   const templateVars = {
-    username: cookieUsername,
+    user: users[userID],
     urls: urlDataBase };
+  console.log(users);
   res.render("urls_index", templateVars);
 });
 
 app. get("/urls/new", (req, res) => {
+  let userID = null;
+  if (req.cookies["user_id"]) {
+    userID = req.cookies["user_id"];
+  }
   const templateVars = {
-    username: req.cookies["username"],
+    user: users[userID],
     shortURL: req.params.shortURL,
     longURL: urlDataBase[req.params.shortURL]
   };
@@ -58,8 +63,12 @@ app. get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
+  let userID = null;
+  if (req.cookies["user_id"]) {
+    userID = req.cookies["user_id"];
+  }
   const templateVars = {
-    username: req.cookies["username"],
+    user: users[userID],
     shortURL: req.params.shortURL,
     longURL: urlDataBase[req.params.shortURL]
   };
@@ -97,12 +106,12 @@ app.post("/urls/:id", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  res.cookie("username", req.body);
+  res.cookie("user_id", req.body);
   res.redirect(301, "/urls");
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie("username");
+  res.clearCookie("user_id");
   res.redirect("/urls");
 });
 
@@ -111,15 +120,24 @@ app.listen(PORT, () => {
 });
 
 app.get("/register", (req, res) => {
+  let userID = null;
+  if (req.cookies["user_id"]) {
+    userID = req.cookies["user_id"];
+  }
   const templateVars = {
-    username: req.cookies["username"],
+    user: users[userID],
     shortURL: req.params.shortURL,
     longURL: urlDataBase[req.params.shortURL]
   };
+  console.log(templateVars);
+  console.log(users);
   res.render("register", templateVars);
 });
 
 app.post("/register", (req, res) => {
+  if (!isEmailValid(req.body.email) || !req.body.password) {
+    res.redirect(400, "/register")
+  } else {
   let newUserID = generateRandomString();
   users[newUserID] = {
     id: newUserID,
@@ -128,6 +146,7 @@ app.post("/register", (req, res) => {
   };
   res.cookie("user_id", newUserID);
   res.redirect(301, "/urls");
+}
 });
 
 
@@ -141,4 +160,17 @@ function appendLongURL(string) {
     return "http://" + string;
   }
   return string;
+}
+
+function isEmailValid(email) {
+  if (!email) {
+    return false;
+  } else {
+    for (const userID in users) {
+      if (users[userID]["email"] === email)  {
+        return false;
+      }
+    }
+    return true;
+  }
 }

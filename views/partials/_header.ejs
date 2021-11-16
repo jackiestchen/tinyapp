@@ -11,21 +11,22 @@
       </div>
     </div>
     <a class="navbar-nav">
-      <% if (username) { %>
+      <% if (!user || !user.hasOwnProperty('email')) { %>
+        <form class="form-inline" action="/login" method="POST">
+          <div class="form-group mb-2">
+            <!-- <label for="longURL">Enter a URL:</label> -->
+            <input class="form-control" type="text" name="username" placeholder="Username" style="width: 300px; margin: 0 5px 0 0">
+            <button type="submit" class="btn btn-outline-dark">Login</button>
+          </div>
+        </form>
+      <% } else { %>
         <form class="form-line" action="/logout" method="POST">
           <div class="form-group mb-2">
-            <label for="username"><%=`Logged In As: ${username.username}!`%></label>            
+            <label for="username"><%=`Logged In As: ${user.email}!`%></label>            
             <button type="submit" class="btn btn-outline-dark">Logout</button>
           </div>  
         </form>
-      <% } else { %>
-      <form class="form-inline" action="/login" method="POST">
-        <div class="form-group mb-2">
-          <!-- <label for="longURL">Enter a URL:</label> -->
-          <input class="form-control" type="text" name="username" placeholder="Username" style="width: 300px; margin: 0 5px 0 0">
-          <button type="submit" class="btn btn-outline-dark">Login</button>
-        </div>
-      </form>
+
       <% } %>
     </a>
   </nav>
