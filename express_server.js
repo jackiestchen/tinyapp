@@ -49,7 +49,7 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
-app. get("/urls/new", (req, res) => {
+app.get("/urls/new", (req, res) => {
   let userID = null;
   if (req.cookies["user_id"]) {
     userID = req.cookies["user_id"];
@@ -106,9 +106,34 @@ app.post("/urls/:id", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  res.cookie("user_id", req.body);
-  res.redirect(301, "/urls");
+  // res.cookie("user_id", req.body);
+  // res.redirect(301, "/urls");
+  let userID = null;
+  if (req.cookies["user_id"]) {
+    userID = req.cookies["user_id"];
+  }
+  const templateVars = {
+    user: users[userID],
+    shortURL: req.params.shortURL,
+    longURL: urlDataBase[req.params.shortURL]
+  };
+  console.log(templateVars);
+  console.log(users);
+  res.render("login", templateVars);
 });
+
+app.get("/login", (req, res) => {
+  let userID = null;
+  if (req.cookies["user_id"]) {
+    userID = req.cookies["user_id"];
+  }
+  const templateVars = {
+    user: users[userID],
+    shortURL: req.params.shortURL,
+    longURL: urlDataBase[req.params.shortURL]
+  };
+  res.render("login", templateVars);
+})
 
 app.post("/logout", (req, res) => {
   res.clearCookie("user_id");
