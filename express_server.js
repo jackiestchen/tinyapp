@@ -2,9 +2,9 @@ const express = require('express');
 const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
-// const cookieParser = require("cookie-parser");
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
+const { getUserByEmail, generateRandomString, appendLongURL, urlsForUser } = require('./helpers');
 
 
 app.use(cookieSession({
@@ -54,7 +54,7 @@ app.get("/urls", (req, res) => {
     let userID = req.session.user_id;
     const templateVars = {
       user: users[userID],
-      urls: urlsForUser(userID) };
+      urls: urlsForUser(userID, urlDataBase) };
     res.render("urls_index", templateVars);
   } else {
     res.redirect("/login?error=" + encodeURIComponent("Please_Login"));
@@ -109,10 +109,6 @@ app.get("/u/:shortURL", (req, res) => {
 
 app.post("/urls/:shortURL/delete", (req, res) => {
   if (users[req.session.user_id]) {
-    // let userID = req.session.user_id;
-    // const templateVars = {
-    //   user: users[userID]
-    // };
     delete urlDataBase[req.params.shortURL];
     res.redirect("/urls");
   } else {
@@ -148,13 +144,12 @@ app.post("/login", (req, res) => {
   if (!req.body.email) {
     res.status(403).send("Error 403 - Forbidden<br>Invalid email address!");
   } else {
-    userID = doesEmailExist(req.body.email);
+    userID = getUserByEmail(req.body.email, users);
     if (!userID) {
       res.status(403).send("Error 403 - Forbidden<br>Cannot find email address!");
     } else if (!passwordCheck(req.body.password, users[userID]["password"])) {
       res.status(403).send("Error 403 - Forbidden<br>Wrong password!");
     } else {
-      // res.cookie("user_id", userID);
       req.session.user_id = userID;
       res.redirect("/urls");
     }
@@ -187,7 +182,7 @@ app.post("/register", (req, res) => {
     res.status(400).send("400 BAD REQUEST<br>INVALID EMAIL ADDRESS");
   } else if (!req.body.password) {
     res.status(400).send("400 BAD REQUEST<br>INVALID PASSWORD");
-  } else if (doesEmailExist(req.body.email)) {
+  } else if (getUserByEmail(req.body.email, users)) {
     res.status(400).send("400 BAD REQUEST<br>EMAIL ALREADY EXITS.");
   } else  {
   
@@ -197,7 +192,6 @@ app.post("/register", (req, res) => {
       email: req.body.email,
       password: bcrypt.hashSync(req.body.password.toString(), 10)
     };
-    // res.cookie("user_id", newUserID);
     req.session.user_id = newUserID;
     res.redirect("/urls");
   }
@@ -207,47 +201,4 @@ app.post("/register", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
-
-function generateRandomString() {
-  let result = "";
-  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  for (let i = 0; i < 6; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return result;
-}
-
-function appendLongURL(string) {
-  string = string.toLowerCase();
-  if (string.substr(0, 7) !== "http://") {
-    return "http://" + string;
-  }
-  return string;
-}
-
-function doesEmailExist(email) {
-  if (!email) {
-    return true;
-  } else {
-    for (const userID in users) {
-      if (users[userID]["email"] === email)  {
-        return users[userID].id;
-      }
-    }
-    return false;
-  }
-}
-
-function urlsForUser(id) {
-  let output = {};
-  for (const shortID in urlDataBase) {
-    if (Object.hasOwnProperty.call(urlDataBase, shortID)) {
-      const element = urlDataBase[shortID];
-      if (element.userID === id) {
-        output[shortID] = element.longURL;
-      }
-    }
-  }
-  return output;
-}
 
