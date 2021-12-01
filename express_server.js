@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const morgan = require('morgan')
+const morgan = require("morgan");
 const PORT = 8080;
 const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
@@ -101,17 +101,12 @@ app.get("/urls/:shortURL", (req, res) => {
   return res.redirect("/login?error=" + encodeURIComponent("Please_Login"));
 });
 
-// POST /urls (create new url)
-app.post("/urls", (req, res) => {
-  if (users[req.session.user_id]) {
-    const shortURL = generateRandomString();
-    urlDataBase[shortURL] = {
-      longURL: appendLongURL(req.body.longURL),
-      userID: req.session.user_id,
-    };
-    return res.redirect(`/urls/${shortURL}`);
-  }
-  return res.redirect("/login?error=" + encodeURIComponent("Please_Login"));
+// GET /login
+app.get("/login", (req, res) => {
+  const templateVars = {
+    user: null,
+  };
+  return res.render("login", templateVars);
 });
 
 // GET /u/shortULR (redirect to URL)
@@ -125,6 +120,27 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   if (users[req.session.user_id]) {
     delete urlDataBase[req.params.shortURL];
     return res.redirect("/urls");
+  }
+  return res.redirect("/login?error=" + encodeURIComponent("Please_Login"));
+});
+
+// GET /register
+app.get("/register", (req, res) => {
+  const templateVars = {
+    user: null,
+  };
+  return res.render("register", templateVars);
+});
+
+// POST /urls (create new url)
+app.post("/urls", (req, res) => {
+  if (users[req.session.user_id]) {
+    const shortURL = generateRandomString();
+    urlDataBase[shortURL] = {
+      longURL: appendLongURL(req.body.longURL),
+      userID: req.session.user_id,
+    };
+    return res.redirect(`/urls/${shortURL}`);
   }
   return res.redirect("/login?error=" + encodeURIComponent("Please_Login"));
 });
@@ -165,26 +181,10 @@ app.post("/login", (req, res) => {
   }
 });
 
-// GET /login
-app.get("/login", (req, res) => {
-  const templateVars = {
-    user: null,
-  };
-  return res.render("login", templateVars);
-});
-
 // POST /logout
 app.post("/logout", (req, res) => {
   req.session = null;
   return res.redirect("/login");
-});
-
-// GET /register
-app.get("/register", (req, res) => {
-  const templateVars = {
-    user: null,
-  };
-  return res.render("register", templateVars);
 });
 
 // POST /register
