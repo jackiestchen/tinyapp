@@ -4,11 +4,11 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 ## Final Product
 
-!["Login"](#https://github.com/jackiestchen/tinyapp/blob/d4f7b89eb70a6d1b472f8a80eed33a17f4d52d8e/doc/login.png)
-!["Register"](#https://github.com/jackiestchen/tinyapp/blob/d4f7b89eb70a6d1b472f8a80eed33a17f4d52d8e/doc/register.png)
-!["Show list of URLs"](#https://github.com/jackiestchen/tinyapp/blob/d4f7b89eb70a6d1b472f8a80eed33a17f4d52d8e/doc/urls.png)
-!["Create a new short URL"](#https://github.com/jackiestchen/tinyapp/blob/d4f7b89eb70a6d1b472f8a80eed33a17f4d52d8e/doc/newUrl.png)
-!["Edit URL"](#https://github.com/jackiestchen/tinyapp/blob/d4f7b89eb70a6d1b472f8a80eed33a17f4d52d8e/doc/editUrl.png)
+!["Login"](#https://github.com/jackiestchen/tinyapp/blob/master/doc/login.png)
+!["Register"](#https://github.com/jackiestchen/tinyapp/blob/master/doc/register.png)
+!["Show list of URLs"](#https://github.com/jackiestchen/tinyapp/blob/master/doc/urls.png)
+!["Create a new short URL"](#https://github.com/jackiestchen/tinyapp/blob/master/doc/newUrl.png)
+!["Edit URL"](#https://github.com/jackiestchen/tinyapp/blob/master/doc/editUrl.png)
 
 ## Dependencies
 
