@@ -47,18 +47,22 @@ const users = {
   },
 };
 
+// GET /
 app.get("/", (req, res) => {
   return res.send("Hello!");
 });
 
+// GET /urls.json
 app.get("/urls.json", (req, res) => {
   return res.json(urlDataBase);
 });
 
+// GET /hello
 app.get("/hello", (req, res) => {
   return res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
+// GET /urls
 app.get("/urls", (req, res) => {
   if (users[req.session.user_id]) {
     let userID = req.session.user_id;
@@ -71,6 +75,7 @@ app.get("/urls", (req, res) => {
   return res.redirect("/login?error=" + encodeURIComponent("Please_Login"));
 });
 
+// GET /urls/new
 app.get("/urls/new", (req, res) => {
   if (users[req.session.user_id]) {
     let userID = req.session.user_id;
@@ -82,6 +87,7 @@ app.get("/urls/new", (req, res) => {
   return res.redirect("/login?error=" + encodeURIComponent("Please_Login"));
 });
 
+// GET /urls/:shortURL
 app.get("/urls/:shortURL", (req, res) => {
   if (users[req.session.user_id]) {
     let userID = req.session.user_id;
@@ -95,6 +101,7 @@ app.get("/urls/:shortURL", (req, res) => {
   return res.redirect("/login?error=" + encodeURIComponent("Please_Login"));
 });
 
+// POST /urls (create new url)
 app.post("/urls", (req, res) => {
   if (users[req.session.user_id]) {
     const shortURL = generateRandomString();
@@ -107,11 +114,13 @@ app.post("/urls", (req, res) => {
   return res.redirect("/login?error=" + encodeURIComponent("Please_Login"));
 });
 
+// GET /u/shortULR (redirect to URL)
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDataBase[req.params.shortURL]["longURL"];
   res.redirect(longURL);
 });
 
+// GET /urls/:shortURL/delete (delete URL)
 app.post("/urls/:shortURL/delete", (req, res) => {
   if (users[req.session.user_id]) {
     delete urlDataBase[req.params.shortURL];
@@ -120,13 +129,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   return res.redirect("/login?error=" + encodeURIComponent("Please_Login"));
 });
 
-// app.get("/urls/:shortURL/edit", (req, res) => {
-//   if (users[req.session.user_id]) {
-//     return res.redirect(`/urls/${req.params.shortURL}`);
-//   }
-//   return res.redirect("/login?error=" + encodeURIComponent("Please_Login"));
-// });
-
+// POST /urls/:id/edit (edit URL)
 app.post("/urls/:id/edit", (req, res) => {
   if (users[req.session.user_id]) {
     urlDataBase[req.params.id] = {
@@ -138,6 +141,7 @@ app.post("/urls/:id/edit", (req, res) => {
   return res.redirect("/login?error=" + encodeURIComponent("Please_Login"));
 });
 
+// POST /login
 app.post("/login", (req, res) => {
   let userID = null;
   const passwordCheck = (input, databasePassword) => {
@@ -161,6 +165,7 @@ app.post("/login", (req, res) => {
   }
 });
 
+// GET /login
 app.get("/login", (req, res) => {
   const templateVars = {
     user: null,
@@ -168,11 +173,13 @@ app.get("/login", (req, res) => {
   return res.render("login", templateVars);
 });
 
+// POST /logout
 app.post("/logout", (req, res) => {
   req.session = null;
   return res.redirect("/login");
 });
 
+// GET /register
 app.get("/register", (req, res) => {
   const templateVars = {
     user: null,
@@ -180,6 +187,7 @@ app.get("/register", (req, res) => {
   return res.render("register", templateVars);
 });
 
+// POST /register
 app.post("/register", (req, res) => {
   if (!req.body.email) {
     return res.status(400).sendFile("400 BAD REQUEST<br>INVALID EMAIL ADDRESS");
@@ -199,6 +207,7 @@ app.post("/register", (req, res) => {
   }
 });
 
+// GET * (page not found)
 app.get("*", (req, res) => {
   const fileName = "404.jpeg";
   const options = {
