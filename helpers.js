@@ -1,3 +1,5 @@
+
+// get userid by email address
 const getUserByEmail = (email, database) => {
   if (!email) {
     return undefined;
@@ -14,6 +16,7 @@ const getUserByEmail = (email, database) => {
   }
 };
 
+// generate a string of 6 random characters and numbers
 const generateRandomString = () => {
   let result = "";
   const characters =
@@ -24,14 +27,17 @@ const generateRandomString = () => {
   return result;
 };
 
+// append url if the user does not input http:// or https://
 const appendLongURL = (string) => {
   string = string.toLowerCase();
-  if (string.substr(0, 7) !== "http://") {
+  if (string.substr(0, 7) !== "http://" || string.substr(0, 8) !== "https://") {
     return "http://" + string;
   }
   return string;
 };
 
+
+// find user data by user id
 const urlsForUser = (id, dataBase) => {
   let output = {};
   for (const shortID in dataBase) {

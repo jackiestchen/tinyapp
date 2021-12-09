@@ -49,17 +49,7 @@ const users = {
 
 // GET /
 app.get("/", (req, res) => {
-  return res.send("Hello!");
-});
-
-// GET /urls.json
-app.get("/urls.json", (req, res) => {
-  return res.json(urlDataBase);
-});
-
-// GET /hello
-app.get("/hello", (req, res) => {
-  return res.send("<html><body>Hello <b>World</b></body></html>\n");
+  return res.redirect("login");
 });
 
 // GET /urls
@@ -103,6 +93,10 @@ app.get("/urls/:shortURL", (req, res) => {
 
 // GET /login
 app.get("/login", (req, res) => {
+  if (users[req.session.user_id]) {
+    return res.redirect("/urls");
+  }
+
   const templateVars = {
     user: null,
   };
@@ -115,7 +109,7 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
-// GET /urls/:shortURL/delete (delete URL)
+// POST /urls/:shortURL/delete (delete URL)
 app.post("/urls/:shortURL/delete", (req, res) => {
   if (users[req.session.user_id]) {
     delete urlDataBase[req.params.shortURL];
