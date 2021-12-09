@@ -120,6 +120,9 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 // GET /register
 app.get("/register", (req, res) => {
+  if (users[req.session.user_id]){
+    return res.redirect("/urls");
+  }
   const templateVars = {
     user: null,
   };
